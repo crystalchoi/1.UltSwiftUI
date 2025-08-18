@@ -28,6 +28,7 @@ struct CalculatorView: View {
                     CalculatorButtonLayout(text: "AC", textColor: .white, backgroundColor: Color(uiColor: .gray).opacity(0.85) )
                 }
                 Button {
+                    textResult = "+"
                     
                 } label: {
                     CalculatorButtonLayout(text: "+/-", textColor: .white, backgroundColor: Color(uiColor: .gray).opacity(0.85) )
