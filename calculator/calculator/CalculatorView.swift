@@ -54,33 +54,35 @@ struct CalculatorView: View {
             HStack(spacing: 20) {
                 Button {
                     textResult = "0"
+                    operation = "AC"
                 } label: {
                     CalculatorButtonLayout(text: "AC", textColor: .white, backgroundColor: Color(uiColor: .gray).opacity(0.85) )
                 }
                 Button {
-                    textResult = "+"
+                    
+                    operation = "+/-"
                     
                 } label: {
                     CalculatorButtonLayout(text: "+/-", textColor: .white, backgroundColor: Color(uiColor: .gray).opacity(0.85) )
                 }
                 Button {
-                    
+                    operation = "%"
                 } label: {
                     CalculatorButtonLayout(text: "%", textColor: .white, backgroundColor: Color(uiColor: .gray).opacity(0.85) )
                 }
-               OperatorButton(value: "/")
+               OperatorButton(value: "/", operation: $operation)
             }
             HStack(spacing: 20) {
                 NumberButton(number: 7, operation: operation, firstNumber: $firstNumber, secondNumber: $secondNumber)
                 NumberButton(number: 8, operation: operation, firstNumber: $firstNumber, secondNumber: $secondNumber)
                 NumberButton(number: 9, operation: operation, firstNumber: $firstNumber, secondNumber: $secondNumber)
-                OperatorButton(value: "+")
+                OperatorButton(value: "+", operation: $operation)
             }
             HStack(spacing: 20) {
                 NumberButton(number: 4, operation: operation, firstNumber: $firstNumber, secondNumber: $secondNumber)
                 NumberButton(number: 5, operation: operation, firstNumber: $firstNumber, secondNumber: $secondNumber)
                 NumberButton(number: 6, operation: operation, firstNumber: $firstNumber, secondNumber: $secondNumber)
-                OperatorButton(value: "-")
+                OperatorButton(value: "-", operation: $operation)
         
             }
            
@@ -88,13 +90,13 @@ struct CalculatorView: View {
                 NumberButton(number: 1, operation: operation, firstNumber: $firstNumber, secondNumber: $secondNumber)
                 NumberButton(number: 2, operation: operation, firstNumber: $firstNumber, secondNumber: $secondNumber)
                 NumberButton(number: 3, operation: operation, firstNumber: $firstNumber, secondNumber: $secondNumber)
-                OperatorButton(value: "x")
+                OperatorButton(value: "x", operation: $operation)
                
             }
             HStack(spacing: 20) {
                 NumberButton(number: 0, operation: operation, firstNumber: $firstNumber, secondNumber: $secondNumber)
-                OperatorButton(value: ",")
-                OperatorButton(value: "=")
+                OperatorButton(value: ",", operation: $operation)
+                OperatorButton(value: "=", operation: $operation)
 
             }
             .preferredColorScheme(.dark)
@@ -104,7 +106,16 @@ struct CalculatorView: View {
     
     func performOperationWillSet(newValue: String, oldValue: String) {
        print(newValue, oldValue)
-        
+        if newValue == "+/-" {
+            performOperationDidSet(operation: oldValue)
+            firstNumber = -firstNumber
+        } else if newValue == "%" {
+            performOperationDidSet(operation: oldValue)
+            firstNumber = firstNumber / 100
+        } else if newValue == "AC" {
+            firstNumber = 0
+            secondNumber = 0
+        }
     }
     func performOperationDidSet(operation: String) {
         if operation == "+" {
@@ -161,9 +172,10 @@ struct NumberButton: View {
 }
 struct OperatorButton: View {
     var value: String = ""
+    @Binding var operation: String
     var body: some View {
         Button {
-            
+            operation = value
         } label: {
                 CalculatorButtonLayout(text: value, textColor: .white, backgroundColor: Color(uiColor: .orange) )
         }
